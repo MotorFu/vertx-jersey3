@@ -8,9 +8,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="vertx-jersey" />
         <module name="jersey" />
-        <module name="guice" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="8" />
+    <bytecodeTargetLevel target="8">
+      <module name="guice" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
