@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>vertx-jersey-binder</artifactId>
+    <artifactId>vertx-jersey-server</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>jersey</module>
-        <module>guice</module>
+        <module>hk2-server</module>
+        <module>guice-server</module>
     </modules>
 
     <properties>

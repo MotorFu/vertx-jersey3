@@ -1,0 +1,7 @@
+{
+    "jersey_binder": "com.github.vertx.jersey.binder.IntegrationBinder",
+    "host": "0.0.0.0",
+    "port": 8080,
+    "base_path": "/rest",
+    "resources": ["com.github.vertx.jersey.resources"]
+}
