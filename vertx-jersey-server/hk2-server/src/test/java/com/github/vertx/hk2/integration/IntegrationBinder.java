@@ -1,6 +1,6 @@
 package com.github.vertx.hk2.integration;
 
-import com.github.vertx.hk2.HK2JerseyBinder;
+import com.github.vertx.jersey.hk2.HK2JerseyBinder;
 import com.github.vertx.jersey.inject.VertxRequestProcessor;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 

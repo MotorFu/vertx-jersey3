@@ -3,16 +3,18 @@ package com.github.vertx.jersey.impl;
 import com.github.vertx.jersey.ApplicationConfigurator;
 import com.github.vertx.jersey.ApplicationHandlerDelegate;
 import com.github.vertx.jersey.JerseyOptions;
+import com.github.vertx.jersey.JerseyServerOptions;
 import com.github.vertx.jersey.VertxContainer;
 import com.github.vertx.jersey.inject.InternalVertxJerseyBinder;
 import com.github.vertx.jersey.inject.Nullable;
 import io.vertx.core.Vertx;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import org.glassfish.jersey.internal.inject.InjectionManager;
 import org.glassfish.jersey.server.ApplicationHandler;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.spi.Container;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,10 +32,12 @@ public class DefaultVertxContainer implements VertxContainer {
   private boolean started;
 
   @Inject
-  public DefaultVertxContainer(Vertx vertx, JerseyOptions options, @Nullable InjectionManager injectionManager, @Nullable ApplicationConfigurator configurator) {
+  public DefaultVertxContainer(Vertx vertx, JerseyServerOptions serverOptions, JerseyOptions options,
+                               @Nullable Provider<InjectionManager> injectionManager,
+                               @Nullable ApplicationConfigurator configurator) {
     this.vertx = vertx;
     this.options = options;
-    this.injectionManager = injectionManager;
+    this.injectionManager = injectionManager.get();
     this.configurator = configurator;
   }
 

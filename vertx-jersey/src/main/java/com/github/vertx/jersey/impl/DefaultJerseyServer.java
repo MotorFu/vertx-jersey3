@@ -23,17 +23,20 @@
 
 package com.github.vertx.jersey.impl;
 
-import com.github.vertx.jersey.*;
+import com.github.vertx.jersey.JerseyHandler;
+import com.github.vertx.jersey.JerseyOptions;
+import com.github.vertx.jersey.JerseyServer;
+import com.github.vertx.jersey.JerseyServerOptions;
+import com.github.vertx.jersey.VertxContainer;
 import com.github.vertx.jersey.inject.Nullable;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import jakarta.inject.Inject;
-import jakarta.inject.Provider;
 
 
 /**
@@ -45,12 +48,14 @@ public class DefaultJerseyServer implements JerseyServer {
 
   private JerseyHandler jerseyHandler;
   private VertxContainer container;
-  private final Provider<JerseyServerOptions> optionsProvider;
+  private final JerseyServerOptions optionsProvider;
   private Handler<HttpServer> setupHandler;
   private HttpServer server;
 
   @Inject
-  public DefaultJerseyServer(JerseyHandler jerseyHandler, VertxContainer container, Provider<JerseyServerOptions> optionsProvider) {
+  public DefaultJerseyServer(JerseyHandler jerseyHandler,
+                             VertxContainer container,
+                             JerseyServerOptions optionsProvider) {
     this.jerseyHandler = jerseyHandler;
     this.container = container;
     this.optionsProvider = optionsProvider;
@@ -60,7 +65,7 @@ public class DefaultJerseyServer implements JerseyServer {
   public void start(@Nullable JerseyServerOptions options, @Nullable JerseyOptions jerseyOptions, @Nullable Handler<AsyncResult<HttpServer>> doneHandler) {
 
     if (options == null) {
-      options = optionsProvider.get();
+      options = optionsProvider;
     }
 
     HttpServerOptions serverOptions = options.getServerOptions();
@@ -80,13 +85,12 @@ public class DefaultJerseyServer implements JerseyServer {
     server = container.getVertx().createHttpServer(serverOptions);
 
     // Set request handler for the baseUri
-    server.requestHandler(jerseyHandler::handle);
+    server.requestHandler(jerseyHandler);
 
     // Perform any additional server setup (add routes etc.)
     if (setupHandler != null) {
       setupHandler.handle(server);
     }
-
     container.getVertx().executeBlocking(
       future -> {
         // Run container startup

@@ -25,6 +25,7 @@ package com.github.vertx.jersey.guice;
 
 //import com.englishtown.vertx.jersey.promises.WhenJerseyServer;
 //import com.englishtown.vertx.jersey.promises.impl.DefaultWhenJerseyServer;
+
 import com.google.inject.AbstractModule;
 
 /**

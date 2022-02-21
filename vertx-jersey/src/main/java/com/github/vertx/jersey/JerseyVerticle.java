@@ -25,8 +25,8 @@ package com.github.vertx.jersey;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import jakarta.inject.Inject;
 
-import javax.inject.Inject;
 
 /**
  * The Vertx Module to enable Jersey to handle JAX-RS resources
@@ -35,11 +35,13 @@ public class JerseyVerticle extends AbstractVerticle {
 
   private JerseyServer jerseyServer;
   private JerseyOptions options;
+  private JerseyServerOptions serverOptions;
 
   @Inject
-  public JerseyVerticle(JerseyServer jerseyServer, JerseyOptions options) {
+  public JerseyVerticle(JerseyServer jerseyServer, JerseyServerOptions serverOptions, JerseyOptions options) {
     this.jerseyServer = jerseyServer;
     this.options = options;
+    this.serverOptions = serverOptions;
   }
 
   /**
@@ -49,7 +51,7 @@ public class JerseyVerticle extends AbstractVerticle {
   public void start(final Promise<Void> startedResult) throws Exception {
     this.start();
 
-    jerseyServer.start(ar -> {
+    jerseyServer.start(serverOptions, options, ar -> {
       if (ar.succeeded()) {
         startedResult.complete();
       } else {

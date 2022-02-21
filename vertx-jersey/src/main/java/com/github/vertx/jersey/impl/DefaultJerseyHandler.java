@@ -29,7 +29,6 @@ import com.github.vertx.jersey.VertxContainer;
 import com.github.vertx.jersey.inject.ContainerResponseWriterProvider;
 import com.github.vertx.jersey.inject.VertxRequestProcessor;
 import com.github.vertx.jersey.security.DefaultSecurityContext;
-import com.google.inject.TypeLiteral;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.vertx.core.Handler;
@@ -37,8 +36,11 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.UriBuilder;
@@ -46,8 +48,6 @@ import org.glassfish.jersey.internal.MapPropertiesDelegate;
 import org.glassfish.jersey.internal.util.collection.Ref;
 import org.glassfish.jersey.server.ContainerRequest;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
@@ -246,10 +246,10 @@ public class DefaultJerseyHandler implements JerseyHandler {
     }
 
     // Set request scoped instances
-    jerseyRequest.setRequestScopedInitializer(locator -> {
-      locator.<Ref<HttpServerRequest>>getInstance((new TypeLiteral<Ref<HttpServerRequest>>() {
+    jerseyRequest.setRequestScopedInitializer(injectionManager -> {
+      injectionManager.<Ref<HttpServerRequest>>getInstance((new GenericType<Ref<HttpServerRequest>>() {
       }).getType()).set(vertxRequest);
-      locator.<Ref<HttpServerResponse>>getInstance((new TypeLiteral<Ref<HttpServerResponse>>() {
+      injectionManager.<Ref<HttpServerResponse>>getInstance((new GenericType<Ref<HttpServerResponse>>() {
       }).getType()).set(vertxRequest.response());
     });
 

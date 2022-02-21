@@ -3,12 +3,16 @@ package com.github.vertx.jersey.guice.loader;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import io.vertx.core.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Context;
+import io.vertx.core.Promise;
+import io.vertx.core.Verticle;
+import io.vertx.core.Vertx;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.impl.verticle.CompilingClassLoader;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +27,7 @@ public class GuiceVerticleLoader extends AbstractVerticle {
   private Verticle realVerticle;
 
   public static final String CONFIG_BOOTSTRAP_BINDER_NAME = "guice_binder";
-  public static final String BOOTSTRAP_BINDER_NAME = "com.englishtown.vertx.guice.BootstrapBinder";
+  public static final String BOOTSTRAP_BINDER_NAME = "com.github.vertx.jersey.guice.BootstrapBinder";
 
   public GuiceVerticleLoader(String verticleName, ClassLoader classLoader, Injector parent) {
     this.verticleName = verticleName;
@@ -134,11 +138,19 @@ public class GuiceVerticleLoader extends AbstractVerticle {
       }
     }
 
+//    final ServiceLocator locator = ServiceLocatorFactory.getInstance().create(null);
+//    ServiceLocatorUtilities.bind(locator, new HK2VertxBinder(vertx));
+
     // Add vert.x binder
     bootstraps.add(new GuiceVertxBinder(vertx));
+//    bootstraps.add(new GuiceJerseyBinder());
+
 
     // Each verticle factory will have it's own (child) injector instance
     Injector injector = parent == null ? Guice.createInjector(bootstraps) : parent.createChildInjector(bootstraps);
+
+
+//    GuiceJerseyServer.initBridge(locator,injector);
     return (Verticle) injector.getInstance(clazz);
   }
 }

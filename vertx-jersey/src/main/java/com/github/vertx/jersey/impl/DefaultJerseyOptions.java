@@ -30,10 +30,14 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
+import jakarta.inject.Inject;
 
-import javax.inject.Inject;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -61,7 +65,7 @@ public class DefaultJerseyOptions implements JerseyOptions, JerseyServerOptions 
   public static final String CONFIG_INSTANCES = "instances";
   public static final int DEFAULT_MAX_BODY_SIZE = 1024 * 1000; // Default max body size to 1MB
 
-  private JsonObject config;
+  private final JsonObject config;
   private HttpServerOptions serverOptions;
 
   @Inject

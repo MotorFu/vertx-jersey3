@@ -51,7 +51,6 @@ public class GuiceVerticleFactory implements VerticleFactory {
 
     Constructor<Verticle> ctor;
     try {
-
       // Use the provided class loader to create an instance of GuiceVerticleLoader.  This is necessary when working with vert.x IsolatingClassLoader
       @SuppressWarnings("unchecked")
       Class<Verticle> loader = (Class<Verticle>) classLoader.loadClass(GuiceVerticleLoader.class.getName());

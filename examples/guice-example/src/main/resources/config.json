@@ -1,0 +1,7 @@
+{
+    "guice_binder": "com.github.vertx.jersey.examples.guice.CustomBinder",
+    "host": "localhost",
+    "port": 8081,
+    "base_path": "/",
+    "resources": ["com.github.vertx.jersey.examples.guice.resources"]
+}

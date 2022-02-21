@@ -25,8 +25,13 @@ package com.github.vertx.hk2;
 
 import com.github.vertx.jersey.JerseyOptions;
 import com.github.vertx.jersey.JerseyServer;
+import com.github.vertx.jersey.JerseyServerOptions;
 import com.github.vertx.jersey.JerseyVerticle;
-import io.vertx.core.*;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Context;
+import io.vertx.core.Handler;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
 import org.junit.Before;
@@ -45,54 +50,56 @@ import static org.mockito.Mockito.*;
  */
 public class JerseyVerticleTest {
 
-    JerseyVerticle jerseyVerticle;
-    JsonObject config = new JsonObject();
+  JerseyVerticle jerseyVerticle;
+  JsonObject config = new JsonObject();
 
-    @Mock
-    public Vertx vertx;
-    @Mock
-    public Context context;
-    @Mock
-    public JerseyServer jerseyServer;
-    @Mock
-    public JerseyOptions options;
-    @Mock
-    public Promise<Void> startedResult;
-    @Mock
-    public AsyncResult<HttpServer> asyncResult;
-    @Captor
-    public ArgumentCaptor<Handler<AsyncResult<HttpServer>>> handlerCaptor;
-    @Rule
-    public final MockitoRule mockitoRule = MockitoJUnit.rule();
+  @Mock
+  public Vertx vertx;
+  @Mock
+  public Context context;
+  @Mock
+  public JerseyServer jerseyServer;
+  @Mock
+  public JerseyOptions options;
+  @Mock
+  public JerseyServerOptions serverOptions;
+  @Mock
+  public Promise<Void> startedResult;
+  @Mock
+  public AsyncResult<HttpServer> asyncResult;
+  @Captor
+  public ArgumentCaptor<Handler<AsyncResult<HttpServer>>> handlerCaptor;
+  @Rule
+  public final MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Before
-    public void setUp() {
-        when(vertx.getOrCreateContext()).thenReturn(context);
-        when(context.config()).thenReturn(config);
-        jerseyVerticle = new JerseyVerticle(jerseyServer, options);
-        jerseyVerticle.init(vertx, context);
-    }
+  @Before
+  public void setUp() {
+    when(vertx.getOrCreateContext()).thenReturn(context);
+    when(context.config()).thenReturn(config);
+    jerseyVerticle = new JerseyVerticle(jerseyServer, serverOptions, options);
+    jerseyVerticle.init(vertx, context);
+  }
 
-    @Test
-    public void testStart() throws Exception {
+  @Test
+  public void testStart() throws Exception {
 
-        jerseyVerticle.start(startedResult);
+    jerseyVerticle.start(startedResult);
 
-        verify(startedResult, never()).complete();
-        verify(startedResult, never()).fail(any(Throwable.class));
+    verify(startedResult, never()).complete();
+    verify(startedResult, never()).fail(any(Throwable.class));
 
-        verify(jerseyServer).start(handlerCaptor.capture());
+    verify(jerseyServer).start(handlerCaptor.capture());
 
-        when(asyncResult.succeeded()).thenReturn(true).thenReturn(false);
+    when(asyncResult.succeeded()).thenReturn(true).thenReturn(false);
 
-        handlerCaptor.getValue().handle(asyncResult);
-        verify(startedResult).complete();
-        verify(startedResult, never()).fail(any(Throwable.class));
+    handlerCaptor.getValue().handle(asyncResult);
+    verify(startedResult).complete();
+    verify(startedResult, never()).fail(any(Throwable.class));
 
-        handlerCaptor.getValue().handle(asyncResult);
-        verify(startedResult).complete();
-        verify(startedResult).fail(any(Throwable.class));
+    handlerCaptor.getValue().handle(asyncResult);
+    verify(startedResult).complete();
+    verify(startedResult).fail(any(Throwable.class));
 
-    }
+  }
 
 }
